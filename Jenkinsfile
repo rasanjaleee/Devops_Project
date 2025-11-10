@@ -2,9 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDS = 'docker-hub-credentials'
-        BACKEND_IMAGE = 'rasanjalee/devops_project_backend:latest'
-        FRONTEND_IMAGE = 'rasanjalee/devops_project_frontend:latest'
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
     }
 
     stages {
@@ -14,55 +12,49 @@ pipeline {
             }
         }
 
-        stage('Build Images') {
+        stage('Build Frontend') {
             steps {
-                echo 'Building backend image...'
-                sh 'docker build -t backend-image ./workshop-backend'
-
-                echo 'Building frontend image...'
-                sh 'docker build -t frontend-image ./frontend'
-            }
-        }
-
-        stage('Tag Images') {
-            steps {
-                sh "docker tag backend-image \${BACKEND_IMAGE}"
-                sh "docker tag frontend-image \${FRONTEND_IMAGE}"
-            }
-        }
-
-        stage('Push Images to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: "\${DOCKERHUB_CREDS}", usernameVariable: 'DH_USER', passwordVariable: 'DH_PASS')]) {
-                    sh 'echo $DH_PASS | docker login -u $DH_USER --password-stdin'
-                    sh "docker push \${BACKEND_IMAGE}"
-                    sh "docker push \${FRONTEND_IMAGE}"
-                    sh 'docker logout'
+                dir('frontend') {
+                    sh 'docker build -t frontend-app .'
                 }
             }
         }
 
-        stage('Deploy Containers') {
+        stage('Build Backend') {
             steps {
-                echo 'Removing old containers if they exist...'
-                sh 'docker rm -f mern-mongodb || true'
-                sh 'docker rm -f mern-backend || true'
-                sh 'docker rm -f mern-frontend || true'
+                dir('workshop-backend') {
+                    sh 'docker build -t backend-app .'
+                }
+            }
+        }
 
-                echo 'Deploying using Docker Compose...'
-                sh 'docker-compose up -d --build'
+        stage('Login to Docker Hub') {
+            steps {
+                sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
+            }
+        }
+
+        stage('Push Images') {
+            steps {
+                sh '''
+                    docker tag frontend-app $DOCKER_HUB_CREDENTIALS_USR/frontend-app:latest
+                    docker tag backend-app $DOCKER_HUB_CREDENTIALS_USR/backend-app:latest
+                    docker push $DOCKER_HUB_CREDENTIALS_USR/frontend-app:latest
+                    docker push $DOCKER_HUB_CREDENTIALS_USR/backend-app:latest
+                '''
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'docker-compose up -d'
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up unused Docker images...'
-            sh 'docker image prune -f'
+            sh 'docker logout'
         }
     }
 }
-"@
-
-# Write to Jenkinsfile
-$jenkinsContent | Set-Content -Path "./Jenkinsfile" -Encoding UTF8
