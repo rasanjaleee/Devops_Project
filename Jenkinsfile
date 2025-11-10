@@ -73,8 +73,12 @@ pipeline {
         always {
             script {
                 echo 'Cleaning up and logging out from Docker Hub...'
-                sh 'docker image prune -f'
-                sh 'docker logout'
+                // run cleanup inside a node to ensure a workspace (hudson.FilePath) is available
+                node {
+                    // be tolerant if docker isn't installed on this node
+                    sh 'docker image prune -f || true'
+                    sh 'docker logout || true'
+                }
             }
         }
     }
