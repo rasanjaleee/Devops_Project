@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        FRONTEND_IMAGE = "rasanjalee/devops_project_backend:latest"
+        BACKEND_IMAGE  = "rasanjalee/devops_project_frontend:latest"
     }
 
     stages {
@@ -16,6 +18,7 @@ pipeline {
             steps {
                 dir('frontend') {
                     script {
+                        echo 'Building frontend Docker image...'
                         sh 'docker build -t frontend-app .'
                     }
                 }
@@ -26,6 +29,7 @@ pipeline {
             steps {
                 dir('workshop-backend') {
                     script {
+                        echo 'Building backend Docker image...'
                         sh 'docker build -t backend-app .'
                     }
                 }
@@ -35,28 +39,31 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 script {
+                    echo 'Logging in to Docker Hub...'
                     sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
                 }
             }
         }
 
-        stage('Push Images') {
+        stage('Tag and Push Images') {
             steps {
                 script {
+                    echo 'Tagging and pushing images...'
                     sh """
-                        docker tag frontend-app $DOCKER_HUB_CREDENTIALS_USR/frontend-app:latest
-                        docker tag backend-app $DOCKER_HUB_CREDENTIALS_USR/backend-app:latest
-                        docker push $DOCKER_HUB_CREDENTIALS_USR/frontend-app:latest
-                        docker push $DOCKER_HUB_CREDENTIALS_USR/backend-app:latest
+                        docker tag frontend-app $FRONTEND_IMAGE
+                        docker tag backend-app $BACKEND_IMAGE
+                        docker push $FRONTEND_IMAGE
+                        docker push $BACKEND_IMAGE
                     """
                 }
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy Containers') {
             steps {
                 script {
-                    sh 'docker-compose up -d'
+                    echo 'Deploying containers using Docker Compose...'
+                    sh 'docker-compose up -d --build'
                 }
             }
         }
@@ -65,6 +72,8 @@ pipeline {
     post {
         always {
             script {
+                echo 'Cleaning up and logging out from Docker Hub...'
+                sh 'docker image prune -f'
                 sh 'docker logout'
             }
         }
