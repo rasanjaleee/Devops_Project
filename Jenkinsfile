@@ -1,4 +1,3 @@
-$jenkinsContent = @"
 pipeline {
     agent any
 
