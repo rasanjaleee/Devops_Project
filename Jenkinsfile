@@ -2,84 +2,66 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
-        FRONTEND_IMAGE = "rasanjalee/devops_project_backend:latest"
-        BACKEND_IMAGE  = "rasanjalee/devops_project_frontend:latest"
+        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
+        FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
+        BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
 
     stages {
-        stage('Checkout') {
+        stage('Checkout Code') {
             steps {
-                checkout scm
+                git 'https://github.com/rasanjaleee/Devops_Project.git'
             }
         }
 
-        stage('Build Frontend') {
+        stage('Build Frontend Image') {
             steps {
-                dir('frontend') {
-                    script {
-                        echo 'Building frontend Docker image...'
-                        sh 'docker build -t frontend-app .'
+                script {
+                    dir('frontend') {
+                        sh "docker build -t ${FRONTEND_IMAGE}:latest ."
                     }
                 }
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Backend Image') {
             steps {
-                dir('workshop-backend') {
-                    script {
-                        echo 'Building backend Docker image...'
-                        sh 'docker build -t backend-app .'
+                script {
+                    dir('workshop-backend') {
+                        sh "docker build -t ${BACKEND_IMAGE}:latest ."
                     }
                 }
             }
         }
 
-        stage('Login to Docker Hub') {
+        stage('Push Images to Docker Hub') {
             steps {
                 script {
-                    echo 'Logging in to Docker Hub...'
-                    sh 'echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin'
+                    sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
+                    sh "docker push ${FRONTEND_IMAGE}:latest"
+                    sh "docker push ${BACKEND_IMAGE}:latest"
+                    sh "docker logout"
                 }
             }
         }
 
-        stage('Tag and Push Images') {
+        stage('Deploy with Terraform') {
             steps {
                 script {
-                    echo 'Tagging and pushing images...'
-                    sh """
-                        docker tag frontend-app $FRONTEND_IMAGE
-                        docker tag backend-app $BACKEND_IMAGE
-                        docker push $FRONTEND_IMAGE
-                        docker push $BACKEND_IMAGE
-                    """
-                }
-            }
-        }
-
-        stage('Deploy Containers') {
-            steps {
-                script {
-                    echo 'Deploying containers using Docker Compose...'
-                    sh 'docker-compose up -d --build'
+                    echo "Terraform deployment steps will go here."
+                    // sh "terraform init"
+                    // sh "terraform apply -auto-approve"
                 }
             }
         }
     }
 
     post {
-        always {
-            script {
-                echo 'Cleaning up and logging out from Docker Hub...'
-                // run cleanup inside a node to ensure a workspace (hudson.FilePath) is available
-                node {
-                    // be tolerant if docker isn't installed on this node
-                    sh 'docker image prune -f || true'
-                    sh 'docker logout || true'
-                }
-            }
+        success {
+            echo '✅ Build, push, and deployment succeeded!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Check the logs for details.'
         }
     }
 }
