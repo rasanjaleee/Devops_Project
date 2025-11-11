@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
+        DOCKER_HUB_CREDENTIALS = credentials('df780a66-ebcb-4d27-bfcd-5156364eabfc')
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
         BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
