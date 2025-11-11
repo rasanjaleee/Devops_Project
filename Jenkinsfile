@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub-creds')
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
         BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
@@ -17,7 +17,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 script {
-                    dir('frontend') {
+                    dir('4thsem/4thsem/frontend') {
                         sh "docker build -t ${FRONTEND_IMAGE}:latest ."
                     }
                 }
@@ -27,7 +27,7 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 script {
-                    dir('workshop-backend') {
+                    dir('4thsem/4thsem/workshop-backend') {
                         sh "docker build -t ${BACKEND_IMAGE}:latest ."
                     }
                 }
@@ -41,16 +41,6 @@ pipeline {
                     sh "docker push ${FRONTEND_IMAGE}:latest"
                     sh "docker push ${BACKEND_IMAGE}:latest"
                     sh "docker logout"
-                }
-            }
-        }
-
-        stage('Deploy with Terraform') {
-            steps {
-                script {
-                    echo "Terraform deployment steps will go here."
-                    // sh "terraform init"
-                    // sh "terraform apply -auto-approve"
                 }
             }
         }
