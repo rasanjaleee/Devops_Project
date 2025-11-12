@@ -16,7 +16,12 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/rasanjaleee/Devops_Project.git'
+                // Robust checkout with cleaning
+                checkout([$class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    userRemoteConfigs: [[url: 'https://github.com/rasanjaleee/Devops_Project.git']],
+                    extensions: [[$class: 'CleanBeforeCheckout']]
+                ])
             }
         }
 
@@ -24,7 +29,12 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        sh "docker build -t ${FRONTEND_IMAGE}:latest ."
+                        // Ensure Dockerfile exists
+                        if (fileExists('Dockerfile')) {
+                            sh "docker build -t ${FRONTEND_IMAGE}:latest ."
+                        } else {
+                            error "Frontend directory or Dockerfile not found!"
+                        }
                     }
                 }
             }
@@ -34,7 +44,11 @@ pipeline {
             steps {
                 script {
                     dir('workshop-backend') {
-                        sh "docker build -t ${BACKEND_IMAGE}:latest ."
+                        if (fileExists('Dockerfile')) {
+                            sh "docker build -t ${BACKEND_IMAGE}:latest ."
+                        } else {
+                            error "Backend directory or Dockerfile not found!"
+                        }
                     }
                 }
             }
