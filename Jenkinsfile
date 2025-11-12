@@ -2,26 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Jenkins Docker Hub credentials ID
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Replace with your Jenkins Docker Hub credentials ID
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
         BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
 
     stages {
-        stage('Clean Workspace') {
-            steps {
-                deleteDir() // Deletes everything in the workspace
-            }
-        }
-
         stage('Checkout Code') {
             steps {
-                // Robust checkout with cleaning
-                checkout([$class: 'GitSCM',
-                    branches: [[name: 'main']],
-                    userRemoteConfigs: [[url: 'https://github.com/rasanjaleee/Devops_Project.git']],
-                    extensions: [[$class: 'CleanBeforeCheckout']]
-                ])
+                git branch: 'main', url: 'https://github.com/rasanjaleee/Devops_Project.git'
             }
         }
 
@@ -29,12 +18,7 @@ pipeline {
             steps {
                 script {
                     dir('frontend') {
-                        // Ensure Dockerfile exists
-                        if (fileExists('Dockerfile')) {
-                            sh "docker build -t ${FRONTEND_IMAGE}:latest ."
-                        } else {
-                            error "Frontend directory or Dockerfile not found!"
-                        }
+                        sh "docker build -t ${FRONTEND_IMAGE}:latest ."
                     }
                 }
             }
@@ -44,11 +28,7 @@ pipeline {
             steps {
                 script {
                     dir('workshop-backend') {
-                        if (fileExists('Dockerfile')) {
-                            sh "docker build -t ${BACKEND_IMAGE}:latest ."
-                        } else {
-                            error "Backend directory or Dockerfile not found!"
-                        }
+                        sh "docker build -t ${BACKEND_IMAGE}:latest ."
                     }
                 }
             }
@@ -57,6 +37,7 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
+                    // Login to Docker Hub using credentials
                     sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
                     sh "docker push ${FRONTEND_IMAGE}:latest"
                     sh "docker push ${BACKEND_IMAGE}:latest"
