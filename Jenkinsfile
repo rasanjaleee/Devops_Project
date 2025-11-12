@@ -2,12 +2,18 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Replace with your Jenkins Docker Hub credentials ID
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Jenkins Docker Hub credentials ID
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
         BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
 
     stages {
+        stage('Clean Workspace') {
+            steps {
+                deleteDir() // Deletes everything in the workspace
+            }
+        }
+
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/rasanjaleee/Devops_Project.git'
@@ -37,7 +43,6 @@ pipeline {
         stage('Push Images to Docker Hub') {
             steps {
                 script {
-                    // Login to Docker Hub using credentials
                     sh "echo ${DOCKER_HUB_CREDENTIALS_PSW} | docker login -u ${DOCKER_HUB_CREDENTIALS_USR} --password-stdin"
                     sh "docker push ${FRONTEND_IMAGE}:latest"
                     sh "docker push ${BACKEND_IMAGE}:latest"
