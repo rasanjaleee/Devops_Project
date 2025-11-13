@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Replace with your Jenkins Docker Hub credentials ID
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') // Your Jenkins Docker Hub credentials ID
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
         BACKEND_IMAGE = "rasanjalee/devops_project_backend"
     }
@@ -43,12 +43,6 @@ pipeline {
                     sh "docker push ${BACKEND_IMAGE}:latest"
                     sh "docker logout"
                 }
-            }
-        }
-
-        stage('Deploy (Optional)') {
-            steps {
-                echo "Add your deployment steps here (e.g., Terraform, Kubernetes, or docker-compose)"
             }
         }
     }
