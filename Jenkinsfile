@@ -64,23 +64,16 @@ pipeline {
         }
 
         stage('Deploy with Docker Compose') {
-            steps {
-                sh '''
-                  set -e
+  steps {
+    sh '''
+      set -e
+      docker compose -f docker-compose.yml down || true
+      docker compose -f docker-compose.yml pull || true
+      docker compose -f docker-compose.yml up -d
+    '''
+  }
+}
 
-                  # Use docker compose if available, otherwise docker-compose
-                  if docker compose version >/dev/null 2>&1; then
-                    COMPOSE="docker compose"
-                  else
-                    COMPOSE="docker-compose"
-                  fi
-
-                  $COMPOSE down || true
-                  $COMPOSE pull || true
-                  $COMPOSE up -d
-                '''
-            }
-        }
     }
 
     post {
