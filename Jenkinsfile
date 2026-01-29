@@ -1,21 +1,17 @@
 pipeline {
     agent any
 
+    options {
+        skipDefaultCheckout(false)   // keep Jenkins default SCM checkout
+    }
+
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials') 
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub-credentials')
         FRONTEND_IMAGE = "rasanjalee/devops_project_frontend"
-        BACKEND_IMAGE = "rasanjalee/devops_project_backend"
+        BACKEND_IMAGE  = "rasanjalee/devops_project_backend"
     }
 
     stages {
-
-        stage('Checkout Code') {
-            steps {
-                git branch: 'main', 
-                url: 'https://github.com/rasanjaleee/Devops_Project.git', 
-                credentialsId: 'github-credentials'
-            }
-        }
 
         stage('Build Frontend Image') {
             steps {
@@ -45,20 +41,15 @@ pipeline {
         stage('Deploy with Docker Compose') {
             steps {
                 sh '''
-                docker-compose down
-                docker-compose pull
-                docker-compose up -d
+                docker compose down || docker-compose down
+                docker compose up -d || docker-compose up -d
                 '''
             }
         }
     }
 
     post {
-        success {
-            echo '✅ CI/CD Pipeline completed successfully!'
-        }
-        failure {
-            echo '❌ Pipeline failed. Check logs.'
-        }
+        success { echo '✅ CI/CD Pipeline completed successfully!' }
+        failure { echo '❌ Pipeline failed. Check logs.' }
     }
 }
