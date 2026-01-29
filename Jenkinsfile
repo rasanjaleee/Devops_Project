@@ -68,11 +68,12 @@ pipeline {
     sh '''
       set -e
       docker compose -f docker-compose.yml down || true
-      docker compose -f docker-compose.yml pull || true
+      docker compose -f docker-compose.yml pull
       docker compose -f docker-compose.yml up -d
     '''
   }
 }
+
 
     }
 
