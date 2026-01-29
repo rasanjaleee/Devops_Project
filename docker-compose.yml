@@ -1,17 +1,17 @@
 services:
   backend:
-    image: rasanjalee/devops_project_backend:latest
+    build: ./workshop-backend   
     container_name: mern-backend
     ports:
       - "5000:5000"
     env_file:
-      - ./workshop-backend/.env
+      - ./workshop-backend/.env  
     depends_on:
       - mongodb
     restart: unless-stopped
 
   frontend:
-    image: rasanjalee/devops_project_frontend:latest
+    build: ./frontend
     container_name: mern-frontend
     ports:
       - "5173:80"
@@ -25,7 +25,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo-data:/data/db
+      - mongo-data:/data/db   # Persistent MongoDB storage
     restart: unless-stopped
 
 volumes:
