@@ -1,15 +1,4 @@
-version: "3.8"
-
 services:
-  mongodb:
-    image: mongo:7.0
-    container_name: mern-mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    restart: unless-stopped
-
   backend:
     image: rasanjalee/devops_project_backend:latest
     container_name: mern-backend
@@ -28,6 +17,15 @@ services:
       - "5173:80"
     depends_on:
       - backend
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    container_name: mern-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
     restart: unless-stopped
 
 volumes:
