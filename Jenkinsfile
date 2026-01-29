@@ -11,7 +11,9 @@ pipeline {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/rasanjaleee/Devops_Project.git'
+                git branch: 'main', 
+                url: 'https://github.com/rasanjaleee/Devops_Project.git', 
+                credentialsId: 'github-credentials'
             }
         }
 
