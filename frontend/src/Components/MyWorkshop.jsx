@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 const getMyEnrollments = async () => {
   const token = localStorage.getItem('token');
-  const response = await fetch('http://localhost:5000/api/enrollments/my-enrollments', {
+  const response = await fetch('http://13.201.53.113:5000/api/enrollments/my-enrollments', {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
@@ -15,7 +15,7 @@ const getMyEnrollments = async () => {
 
 const cancelEnrollment = async (workshopId) => {
   const token = localStorage.getItem('token');
-  const response = await fetch(`http://localhost:5000/api/enrollments/${workshopId}/enroll`, {
+  const response = await fetch(`http://13.201.53.113:5000/api/enrollments/${workshopId}/enroll`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -28,7 +28,7 @@ const cancelEnrollment = async (workshopId) => {
 
 const updateEnrollmentProgress = async (workshopId, progress, completed = false) => {
   const token = localStorage.getItem('token');
-  const response = await fetch(`http://localhost:5000/api/enrollments/${workshopId}/progress`, {
+  const response = await fetch(`http://13.201.53.113:5000/api/enrollments/${workshopId}/progress`, {
     method: 'PATCH',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -251,7 +251,7 @@ const MyWorkshops = () => {
                     {workshop.image && (
                       <div style={{ height: '200px', overflow: 'hidden' }}>
                         <img 
-  src={`http://localhost:5000/uploads/${workshop.image}`} 
+  src={`http://13.201.53.113:5000/uploads/${workshop.image}`} 
   alt={workshop.title}
   className="card-img-top h-100"
   style={{ objectFit: 'cover' }}

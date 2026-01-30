@@ -14,7 +14,7 @@ function HomePage() {
 
 
 useEffect(() => {
-  axios.get("http://localhost:5000/api/workshops/featured")  // Makes an get HTTP request to backend end point.
+  axios.get("http://13.201.53.113:5000/api/workshops/featured")  // Makes an get HTTP request to backend end point.
     .then((response) => {
       if (response.data.success) {   // if the response success is true 
         setFeaturedWorkshops(response.data.data); // response is the entire response from the server
@@ -26,9 +26,9 @@ useEffect(() => {
   useEffect(() => {
     const fetchWorkshops = async () => {
       try {
-       let url = "http://localhost:5000/api/workshops"; 
+       let url = "http://13.201.53.113:5000/api/workshops"; 
         if (selectedCategory) {
-          url = `http://localhost:5000/api/workshops/category/${selectedCategory}`;
+          url = `http://13.201.53.113:5000/api/workshops/category/${selectedCategory}`;
         }
         const res = await axios.get(url);
         setWorkshops(res.data.data || res.data);
@@ -86,7 +86,7 @@ useEffect(() => {
             <Card className="h-100 shadow-sm">
               <Card.Img
                 variant="top"
-                src={`http://localhost:5000/uploads/${workshop.image}`}
+                src={`http://13.201.53.113:5000/uploads/${workshop.image}`}
                 alt={workshop.title}
               />
               <Card.Body>
@@ -146,7 +146,7 @@ useEffect(() => {
                   <Card className="h-100 shadow-sm">
                     <Card.Img
                       variant="top"
-                      src={`http://localhost:5000/uploads/${workshop.image}`}
+                      src={`http://13.201.53.113:5000/uploads/${workshop.image}`}
                       alt={workshop.title}
                     />
                     <Card.Body>

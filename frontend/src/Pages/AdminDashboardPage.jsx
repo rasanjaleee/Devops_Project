@@ -60,7 +60,7 @@ function AdminDashboardPage() {
     setFormData({...workshop, image:null});
     const existingVideos = (workshop.videos || []).map(v=>({file:null, title:v.title, order:v.order, filename:v.filename}));
     setVideos(existingVideos);
-    setImagePreview(`http://localhost:5000/uploads/${workshop.image}`);
+    setImagePreview(`http://:13.201.53.1135000/uploads/${workshop.image}`);
     setShowModal(true);
   };
   const resetForm = () => { setFormData({title:'',description:'',instructor:'',category:'',duration:'',price:'',image:null}); setVideos([]); setImagePreview(''); setCurrentWorkshop(null); };
@@ -123,7 +123,7 @@ function AdminDashboardPage() {
           <tbody>
             {workshops.map(w => (
               <tr key={w._id} className="align-middle">
-                <td><Image src={`http://localhost:5000/uploads/${w.image}`} width="50" height="50" rounded /></td>
+                <td><Image src={`http://13.201.53.113:5000/uploads/${w.image}`} width="50" height="50" rounded /></td>
                 <td>{w.title}</td>
                 <td>{w.instructor}</td>
                 <td><Badge bg="info">{w.category}</Badge></td>

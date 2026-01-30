@@ -196,7 +196,7 @@ const handleEnroll = async (workshop) => {
               <Card className="h-100 workshop-card">
                 <Card.Img
                   variant="top"
-                  src={`http://localhost:5000/uploads/${workshop.image}`}
+                  src={`http://13.201.53.113:5000/uploads/${workshop.image}`}
                   alt={workshop.title}
                   className="card-img-top"
                 />

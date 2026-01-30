@@ -126,7 +126,7 @@ function WorkshopDetailsPage() {
                       <div className="position-relative">
                         <div className="ratio ratio-16x9">
                           <video
-                            src={`http://localhost:5000${video.path}`}
+                            src={`http://13.201.53.113:5000${video.path}`}
                             controls
                             className="rounded w-100"
                             onEnded={() => handleVideoComplete(index)}
