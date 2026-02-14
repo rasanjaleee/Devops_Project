@@ -20,14 +20,14 @@ pipeline {
 
         stage('Clean Workspace') {
             steps {
-                // Built-in, no plugin needed
+                
                 deleteDir()
             }
         }
 
         stage('Checkout SCM') {
             steps {
-                // Jenkins checks out the same repo/branch configured in job settings
+                
                 checkout scm
             }
         }
@@ -64,15 +64,16 @@ pipeline {
         }
 
         stage('Deploy with Docker Compose') {
-  steps {
-    sh '''
-      set -e
-      docker compose -f docker-compose.yml down || true
-      docker compose -f docker-compose.yml pull
-      docker compose -f docker-compose.yml up -d
-    '''
-  }
-}
+            steps {
+                sh '''
+                    set -e
+                    docker compose -f docker-compose.yml down || true
+                    docker rmi ${FRONTEND_IMAGE}:latest ${BACKEND_IMAGE}:latest || true
+                    docker compose -f docker-compose.yml pull
+                    docker compose -f docker-compose.yml up -d --force-recreate
+                '''
+            }
+        }
 
 
     }
