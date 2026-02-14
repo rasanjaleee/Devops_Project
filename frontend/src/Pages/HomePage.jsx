@@ -255,7 +255,6 @@ useEffect(() => {
         <p className="lead mb-4">
           Join thousands of students advancing their careers with our workshops
         </p>
-        
         <Button as={Link} to="/signup" variant="primary" size="lg" className="px-5">
           Sign Up Now
         </Button>
