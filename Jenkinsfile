@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     options {
-        // We will do our own checkout after cleaning the workspace
+        
         skipDefaultCheckout(true)
 
-        // Nice-to-have safety
+        
         disableConcurrentBuilds()
         timestamps()
     }
