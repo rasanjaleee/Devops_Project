@@ -40,7 +40,7 @@ function Navbar() {
 
           <BootstrapNavbar.Brand as={Link} to="/home" className="navbar-brand-custom">
             <FaGraduationCap size={28} />
-            WorkshopHub
+            SkillBoom
           </BootstrapNavbar.Brand>
           
           <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" className="navbar-toggler-custom"/>
