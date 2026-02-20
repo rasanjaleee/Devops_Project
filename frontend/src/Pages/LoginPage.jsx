@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaGoogle, FaFacebookF, FaApple } from 'react-icons/fa';
 import background from '../assets/background_08.jpg';
 import { useAuth } from '../Context/AuthContext'; 
-import { login as apiLogin } from '../services/api'; // Import your real API login function
+import { login as apiLogin } from '../services/api';
 
 function LoginPage() {
   const [formData, setFormData] = useState({

@@ -79,7 +79,7 @@ useEffect(() => {
       </div>
 
    <Container className="my-5">
-      <h2 className="text-center mb-5">Featured Workshops</h2>
+      <h2 className="text-center mb-5">Rasanjalee Edirisinghe</h2>
       <Row xs={1} md={3} className="g-4">
         {featuredWorkshops.map((workshop) => (
           <Col key={workshop._id}>
